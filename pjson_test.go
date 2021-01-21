@@ -274,6 +274,39 @@ func TestIter(t *testing.T) {
 	})
 	mustEqual(string(out), "true")
 
+	json = []byte(` { "a" : "b" , "c" : [ 1 , 2 , 3 ] } `)
+	out = nil
+	var index int
+	expect := []int{
+		Start | Open | Object,
+		Key | String,
+		Colon,
+		Value | String,
+		Comma,
+		Key | String,
+		Colon,
+		Value | Open | Array,
+		Value | Number,
+		Comma,
+		Value | Number,
+		Comma,
+		Value | Number,
+		Value | Close | Array,
+		End | Close | Object,
+	}
+	Parse(json, func(start, end, info int) int {
+		if expect[index] != info {
+			t.Fatalf("expected %d, got %d (#%d)\n", expect[index], info, index)
+			return 0
+		}
+		index++
+		return 1
+	})
+	if index != 15 {
+		panic("!")
+	}
+	// mustEqual(string(out), "true")
+
 }
 
 func testreturnvalue(t *testing.T, json string, expect int) {

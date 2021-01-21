@@ -21,7 +21,8 @@ const (
 	End     // the data is the end of the JSON document
 	Open    // the data is an open character (Object or Array, '{' or '[')
 	Close   // the data is an close character (Object or Array, '}' or ']')
-	Key     // the data is a JSON Array key
+	Key     // the data is a JSON Object key
+	Value   // the data is a JSON Object or Array value
 	Escaped // the data is a String with at least one escape character ('\')
 	Sign    // the data is a signed Number (has a '-' prefix)
 	Dot     // the data is a Number has a dot (radix point)
@@ -200,7 +201,11 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 				return i, ok, stop
 			}
 			if f != nil {
-				if f(i-1, i, Object|Close|(dinfo<<1)) == 0 {
+				if dinfo&Start == Start {
+					dinfo &= ^Start
+					dinfo |= End
+				}
+				if f(i-1, i, Object|Close|dinfo) == 0 {
 					return i, true, true
 				}
 			}
@@ -223,7 +228,11 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 				return i, ok, stop
 			}
 			if f != nil {
-				if f(i-1, i, Array|Close|(dinfo<<1)) == 0 {
+				if dinfo&Start == Start {
+					dinfo &= ^Start
+					dinfo |= End
+				}
+				if f(i-1, i, Array|Close|dinfo) == 0 {
 					return i, true, true
 				}
 			}
@@ -253,7 +262,10 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 			return i, ok, stop
 		}
 		if f != nil {
-			if f(mark, i, info|dinfo|(dinfo<<1)) == 0 {
+			if dinfo&Start == Start {
+				dinfo |= End
+			}
+			if f(mark, i, info|dinfo) == 0 {
 				return i, true, true
 			}
 		}
@@ -280,7 +292,7 @@ func vobject(json []byte, i int, f vfn) (oi int, ok, stop bool) {
 				return i, ok, stop
 			}
 			if f != nil {
-				if f(mark, i, info|Key) == 0 {
+				if f(mark, i, info|Key|String) == 0 {
 					return i, true, true
 				}
 				index++
@@ -293,7 +305,7 @@ func vobject(json []byte, i int, f vfn) (oi int, ok, stop bool) {
 					return i, true, true
 				}
 			}
-			if i, ok, stop = vany(json, i, 0, f); stop {
+			if i, ok, stop = vany(json, i, Value, f); stop {
 				return i, ok, stop
 			}
 			if i, ok, stop = vcomma(json, i, '}'); stop {
@@ -336,7 +348,7 @@ func varray(json []byte, i int, f vfn) (oi int, ok, stop bool) {
 			if isws(json[i]) {
 				continue
 			}
-			if i, ok, stop = vany(json, i, 0, f); stop {
+			if i, ok, stop = vany(json, i, Value, f); stop {
 				return i, ok, stop
 			}
 			if i, ok, stop = vcomma(json, i, ']'); stop {
