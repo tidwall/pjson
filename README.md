@@ -6,7 +6,7 @@ A JSON stream parser for Go
 
 ## Example
 
-```
+```go
 package main
 
 import "github.com/tidwall/pjson"
