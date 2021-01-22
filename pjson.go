@@ -103,34 +103,58 @@ func vstring(json []byte, i int) (outi, info int, ok, stop bool) {
 		if unroll {
 			for i < len(json)-7 {
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
 				if isstrtok(json[i]) {
+					if json[i] == '"' {
+						return i + 1, info, true, false
+					}
 					goto tok
 				}
 				i++
@@ -138,6 +162,9 @@ func vstring(json []byte, i int) (outi, info int, ok, stop bool) {
 		}
 		for ; i < len(json); i++ {
 			if isstrtok(json[i]) {
+				if json[i] == '"' {
+					return i + 1, info, true, false
+				}
 				goto tok
 			}
 		}
@@ -183,9 +210,12 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 		if isws(json[i]) {
 			continue
 		}
-
 		mark := i
-		if json[i] == '{' {
+		var info int
+		if json[i] == '"' {
+			i, info, ok, stop = vstring(json, i+1)
+			info |= String
+		} else if json[i] == '{' {
 			f2 := f
 			if f != nil {
 				r := f(i, i+1, Object|Open|dinfo)
@@ -210,9 +240,7 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 				}
 			}
 			return i, true, false
-		}
-
-		if json[i] == '[' {
+		} else if json[i] == '[' {
 			f2 := f
 			if f != nil {
 				r := f(i, i+1, Array|Open|dinfo)
@@ -237,12 +265,6 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 				}
 			}
 			return i, true, false
-		}
-
-		var info int
-		if json[i] == '"' {
-			i, info, ok, stop = vstring(json, i+1)
-			info |= String
 		} else if json[i] == '-' || isnum(json[i]) {
 			i, info, ok, stop = vnumber(json, i+1)
 			info |= Number
@@ -275,7 +297,6 @@ func vany(json []byte, i int, dinfo int, f vfn) (oi int, ok, stop bool) {
 }
 
 func vobject(json []byte, i int, f vfn) (oi int, ok, stop bool) {
-	var index int
 	for ; i < len(json); i++ {
 		if isws(json[i]) {
 			continue
@@ -295,7 +316,6 @@ func vobject(json []byte, i int, f vfn) (oi int, ok, stop bool) {
 				if f(mark, i, info|Key|String) == 0 {
 					return i, true, true
 				}
-				index++
 			}
 			if i, ok, stop = vcolon(json, i); stop {
 				return i, ok, stop

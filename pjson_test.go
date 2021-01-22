@@ -274,6 +274,17 @@ func TestIter(t *testing.T) {
 	})
 	mustEqual(string(out), "true")
 
+	json = []byte(`{  "hi\nthere": "yo" }`)
+	out = nil
+	Parse(json, func(start, end, info int) int {
+		if info&(Key) == Key {
+			out = append(out, json[start:end]...)
+			return 0
+		}
+		return 1
+	})
+	mustEqual(string(out), `"hi\nthere"`)
+
 	json = []byte(` { "a" : "b" , "c" : [ 1 , 2 , 3 ] } `)
 	out = nil
 	var index int
