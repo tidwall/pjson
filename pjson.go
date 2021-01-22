@@ -101,7 +101,7 @@ const unroll = true
 func vstring(json []byte, i int) (outi, info int, ok, stop bool) {
 	for {
 		if unroll {
-			for i < len(json)-8 {
+			for i < len(json)-7 {
 				if isstrtok(json[i]) {
 					goto tok
 				}
@@ -370,12 +370,12 @@ func varray(json []byte, i int, f vfn) (oi int, ok, stop bool) {
 func vcolon(json []byte, i int) (outi int, ok, stop bool) {
 loop:
 	if i < len(json) {
+		if json[i] == ':' {
+			return i + 1, true, false
+		}
 		if isws(json[i]) {
 			i++
 			goto loop
-		}
-		if json[i] == ':' {
-			return i + 1, true, false
 		}
 	}
 	return i, false, true
@@ -387,12 +387,12 @@ loop:
 		if json[i] == ',' {
 			return i, true, false
 		}
+		if json[i] == end {
+			return i, true, false
+		}
 		if isws(json[i]) {
 			i++
 			goto loop
-		}
-		if json[i] == end {
-			return i, true, false
 		}
 	}
 	return i, false, true
