@@ -53,7 +53,7 @@ const (
 // stopped early then this value will be the position the parser was at when it
 // stopped, otherwise the value will be equal the length of the original json
 // document.
-func Parse(json []byte, iter func(start, end, info int) int) int {
+func Parse(json []byte, opts int, iter func(start, end, info int) int) int {
 	i, ok, _ := vdoc(json, 0, iter)
 	if !ok {
 		i *= -1

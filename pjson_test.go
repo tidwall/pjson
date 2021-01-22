@@ -107,28 +107,28 @@ func TestIter(t *testing.T) {
 
 	json = []byte(` { "hello" : [ 1, 2, 3 ], "jello" : [ 4, 5, 6 ] } `)
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return -1
 	})
 	mustEqual(string(out), "{}")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return 0
 	})
 	mustEqual(string(out), "{")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return -1
 	})
 	mustEqual(string(out), "{}")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&Key == Key {
 			return 0
@@ -138,7 +138,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), `{"hello"`)
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&Colon == Colon {
 			return 0
@@ -148,7 +148,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), `{"hello":`)
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&(Open|Array) == Open|Array {
 			return -1
@@ -161,7 +161,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), `{"hello":[],`)
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&(Open|Array) == Open|Array {
 			return -1
@@ -171,7 +171,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), `{"hello":[],"jello":[]}`)
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&(Open|Array) == Open|Array {
 			return -1
@@ -184,7 +184,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), `{"hello":[],"jello":[]}`)
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Object|Start) == Object|Start {
 			out = append(out, json[start:end]...)
 		}
@@ -193,7 +193,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), "{")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Object|Start|End) == Object|Start|End {
 			out = append(out, json[start:end]...)
 		}
@@ -203,7 +203,7 @@ func TestIter(t *testing.T) {
 
 	json = []byte(" [ 1,2,3 ] ")
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return 0
 	})
@@ -211,7 +211,7 @@ func TestIter(t *testing.T) {
 
 	json = []byte(" [ 1,2,3 ] ")
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&Comma == Comma {
 			return 0
@@ -221,14 +221,14 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), "[1,")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return -1
 	})
 	mustEqual(string(out), "[]")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		if info&(Array|Close) == Array|Close {
 			return 0
@@ -238,7 +238,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), "[1,2,3]")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Array|Start) == Array|Start {
 			out = append(out, json[start:end]...)
 		}
@@ -247,7 +247,7 @@ func TestIter(t *testing.T) {
 	mustEqual(string(out), "[")
 
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Array|Start|End) == Array|Start|End {
 			out = append(out, json[start:end]...)
 		}
@@ -257,7 +257,7 @@ func TestIter(t *testing.T) {
 
 	json = []byte(" true ")
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return 0
 	})
@@ -265,7 +265,7 @@ func TestIter(t *testing.T) {
 
 	json = []byte(" true ")
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Start|End) == Start|End {
 			out = append(out, json[start:end]...)
 			return 0
@@ -276,7 +276,7 @@ func TestIter(t *testing.T) {
 
 	json = []byte(`{  "hi\nthere": "yo" }`)
 	out = nil
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if info&(Key) == Key {
 			out = append(out, json[start:end]...)
 			return 0
@@ -305,7 +305,7 @@ func TestIter(t *testing.T) {
 		Value | Close | Array,
 		End | Close | Object,
 	}
-	Parse(json, func(start, end, info int) int {
+	Parse(json, 0, func(start, end, info int) int {
 		if expect[index] != info {
 			t.Fatalf("expected %d, got %d (#%d)\n", expect[index], info, index)
 			return 0
@@ -322,7 +322,7 @@ func TestIter(t *testing.T) {
 
 func testreturnvalue(t *testing.T, json string, expect int) {
 	t.Helper()
-	e := Parse([]byte(json), nil)
+	e := Parse([]byte(json), 0, nil)
 	if e != expect {
 		t.Fatalf("expected '%d', got '%d'", expect, e)
 	}
@@ -340,7 +340,7 @@ func TestReturnValues(t *testing.T) {
 
 func testvalid(t *testing.T, json string, expect bool) {
 	t.Helper()
-	e := Parse([]byte(json), nil)
+	e := Parse([]byte(json), 0, nil)
 	ok := e > 0
 	if ok != expect {
 		t.Fatal("mismatch")
@@ -437,7 +437,7 @@ func TestValidBasic(t *testing.T) {
 // if the new doc matches the original.
 func mustBeAGood(json []byte) {
 	var out []byte
-	n := Parse(json, func(start, end, info int) int {
+	n := Parse(json, 0, func(start, end, info int) int {
 		out = append(out, json[start:end]...)
 		return 1
 	})
@@ -501,7 +501,7 @@ func testSpeed(path string) {
 	fmt.Printf("== %s == (%d bytes)\n", baseName, len(jdata))
 	N := 200000000 / len(jdata) / 10 * 10
 	lotsaOps("pjson.Parse (noop iter)", N, func() int {
-		if Parse(jdata, func(start, end, info int) int {
+		if Parse(jdata, 0, func(start, end, info int) int {
 			return 1
 		}) < 0 {
 			panic("invalid")
@@ -509,7 +509,7 @@ func testSpeed(path string) {
 		return len(jdata)
 	})
 	lotsaOps("pjson.Parse (nil iter)", N, func() int {
-		if Parse(jdata, nil) < 0 {
+		if Parse(jdata, 0, nil) < 0 {
 			panic("invalid")
 		}
 		return len(jdata)
