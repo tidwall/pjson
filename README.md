@@ -6,6 +6,8 @@ A JSON stream parser for Go
 
 ## Example
 
+The example below prints all string values from a JSON document.
+
 ```go
 package main
 
@@ -25,8 +27,8 @@ func main() {
 	  ]
 	}
 	`
-	pjson.Parse([]byte(json), func(start, end, info int) int {
-		if info&pjson.String == pjson.String {
+	pjson.Parse([]byte(json), 0, func(start, end, info int) int {
+		if info&(pjson.String|pjson.Value) == pjson.String|pjson.Value {
 			println(json[start:end])
 		}
 		return 1
