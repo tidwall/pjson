@@ -2,7 +2,9 @@
 
 [![GoDoc](https://godoc.org/github.com/tidwall/pjson?status.svg)](https://godoc.org/github.com/tidwall/pjson)
 
-A JSON stream parser for Go
+A JSON stream parser for Go and ([Rust](https://github.com/tidwall/pjson.rs))
+
+
 
 ## Example
 
