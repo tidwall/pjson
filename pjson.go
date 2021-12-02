@@ -102,59 +102,36 @@ func vstring(json []byte, i int) (outi, info int, ok, stop bool) {
 	for {
 		if unroll {
 			for i < len(json)-7 {
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				jsonv := json[i : i+8]
+				if isstrtok(jsonv[0]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[1]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[2]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[3]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[4]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[5]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[6]) {
 					goto tok
 				}
 				i++
-				if isstrtok(json[i]) {
-					if json[i] == '"' {
-						return i + 1, info, true, false
-					}
+				if isstrtok(jsonv[7]) {
 					goto tok
 				}
 				i++
@@ -162,9 +139,6 @@ func vstring(json []byte, i int) (outi, info int, ok, stop bool) {
 		}
 		for ; i < len(json); i++ {
 			if isstrtok(json[i]) {
-				if json[i] == '"' {
-					return i + 1, info, true, false
-				}
 				goto tok
 			}
 		}
