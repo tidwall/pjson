@@ -5,28 +5,28 @@
 package pjson
 
 // Bit flags passed to the "info" parameter of the iter function which
-// provides additional information about the
+// provides additional information about the current JSON Element.
 const (
 	_       = 1 << iota
-	String  // the data is a JSON String
-	Number  // the data is a JSON Number
-	True    // the data is a JSON True
-	False   // the data is a JSON False
-	Null    // the data is a JSON NUll
-	Object  // the data is a JSON Object (open or close character)
-	Array   // the data is a JSON Array (open or close character)
-	Comma   // the data is a JSON comma character ','
-	Colon   // the data is a JSON colon character ':'
-	Start   // the data is the start of the JSON document
-	End     // the data is the end of the JSON document
-	Open    // the data is an open character (Object or Array, '{' or '[')
-	Close   // the data is an close character (Object or Array, '}' or ']')
-	Key     // the data is a JSON Object key
-	Value   // the data is a JSON Object or Array value
-	Escaped // the data is a String with at least one escape character ('\')
-	Sign    // the data is a signed Number (has a '-' prefix)
-	Dot     // the data is a Number has a dot (radix point)
-	E       // the data is a Number in scientific notation (has 'E' or 'e')
+	String  // token is a JSON String
+	Number  // token is a JSON Number
+	True    // token is a JSON True
+	False   // token is a JSON False
+	Null    // token is a JSON NUll
+	Object  // token is a JSON Object (open or close character)
+	Array   // token is a JSON Array (open or close character)
+	Comma   // token is a JSON comma character ','
+	Colon   // token is a JSON colon character ':'
+	Start   // token is the start of the JSON document
+	End     // token is the end of the JSON document
+	Open    // token is an open character (Object or Array, '{' or '[')
+	Close   // token is an close character (Object or Array, '}' or ']')
+	Key     // token is a JSON Object key
+	Value   // token is a JSON Object or Array value
+	Escaped // token is a String with at least one escape character ('\')
+	Sign    // token is a signed Number (has a '-' prefix)
+	Dot     // token is a Number that has a dot (radix point)
+	E       // token is a Number in scientific notation (has 'E' or 'e')
 )
 
 // Parse JSON.
@@ -44,11 +44,13 @@ const (
 // This operation returns zero or a negative value if an error occured. This
 // value represents the position that the parser was at when it discovered the
 // error. To get the true offset multiple this value by -1.
-//   e := Parse(json, iter)
-//   if e < 0 {
-//       pos := e * -1
-//       return fmt.Errorf("parsing error at position %d", pos)
-//   }
+//
+//	e := Parse(json, iter)
+//	if e < 0 {
+//	    pos := e * -1
+//	    return fmt.Errorf("parsing error at position %d", pos)
+//	}
+//
 // This operation returns a positive value when successful. If the 'iter'
 // stopped early then this value will be the position the parser was at when it
 // stopped, otherwise the value will be equal the length of the original json
