@@ -20,7 +20,7 @@ const (
 	Start   // token is the start of the JSON document
 	End     // token is the end of the JSON document
 	Open    // token is an open character (Object or Array, '{' or '[')
-	Close   // token is an close character (Object or Array, '}' or ']')
+	Close   // token is a close character (Object or Array, '}' or ']')
 	Key     // token is a JSON Object key
 	Value   // token is a JSON Object or Array value
 	Escaped // token is a String with at least one escape character ('\')
